@@ -1,8 +1,8 @@
 import SearchBox from "./SearchBox";
 import NotesList from "./NotesList";
 import Navigation from "./Navigation";
+import { useEffect, useState } from "react";
 
-// Sidebar Component
 const Sidebar = ({
     notes,
     selectedNote,
@@ -17,8 +17,22 @@ const Sidebar = ({
     t,
     currentTheme
 }) => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
-        <div style={{ width: '300px', flexShrink: 0, order: isRTL ? 2 : 1 }}>
+        <div style={{
+            width: '100%',
+            maxWidth: '300px',
+            marginBottom: isMobile ? '20px' : '0'
+        }}>
             <Navigation
                 t={t}
                 onNewNote={onNewNote}

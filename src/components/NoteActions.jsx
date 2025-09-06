@@ -3,7 +3,13 @@ import { Star, Save, Edit, Trash2 } from 'lucide-react';
 // Note Actions Component
 const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavorite, isRTL, t, currentTheme }) => {
     return (
-        <div style={{ display: 'flex', gap: '10px', margin: isRTL ? '0 20px 0 0' : '0 0 0 20px' }}>
+        <div style={{
+            display: 'flex',
+            gap: '8px',
+            flexWrap: 'wrap',
+            justifyContent: isRTL ? 'flex-start' : 'flex-end',
+            marginTop: '10px'
+        }}>
             <button
                 onClick={() => onToggleFavorite(note.id)}
                 style={{
@@ -13,7 +19,8 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                     padding: '8px 12px',
                     fontSize: '14px',
                     cursor: 'pointer',
-                    borderRadius: '4px'
+                    borderRadius: '4px',
+                    minWidth: '40px'
                 }}
                 title={note.isFavorite ? t.removeFromFavorites : t.addToFavorites}
             >
@@ -30,7 +37,8 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                         padding: '8px 12px',
                         fontSize: '14px',
                         cursor: 'pointer',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
+                        minWidth: '40px'
                     }}
                     title={t.save}
                 >
@@ -46,7 +54,8 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                         padding: '8px 12px',
                         fontSize: '14px',
                         cursor: 'pointer',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
+                        minWidth: '40px'
                     }}
                     title={t.edit}
                 >
@@ -63,7 +72,8 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                     padding: '8px 12px',
                     fontSize: '14px',
                     cursor: 'pointer',
-                    borderRadius: '4px'
+                    borderRadius: '4px',
+                    minWidth: '40px'
                 }}
                 title={t.delete}
             >
@@ -72,5 +82,4 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
         </div>
     );
 };
-
 export default NoteActions;

@@ -22,7 +22,11 @@ const MainContent = ({
     currentTheme
 }) => {
     return (
-        <div style={{ flex: 1, order: isRTL ? 1 : 2 }}>
+        <div style={{
+            flex: 1,
+            width: '100%',
+            minWidth: 0 // Important for flex child overflow
+        }}>
             {isCreating ? (
                 <CreateNoteForm
                     newNote={newNote}
@@ -55,6 +59,4 @@ const MainContent = ({
             )}
         </div>
     );
-};
-
-export default MainContent;
+}; export default MainContent;

@@ -142,8 +142,24 @@ const themes = {
   }
 };
 
+// ===== Custom Hook =====
+const useResponsive = () => {
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
+    checkSize();
+    window.addEventListener('resize', checkSize);
+    return () => window.removeEventListener('resize', checkSize);
+  }, []);
+
+  return isMobile;
+};
+
+// ===== Main Component =====
 const AcademicNotesApp = () => {
   // ======== State Hooks ========
   const [notes, setNotes] = useState([]);
@@ -157,11 +173,15 @@ const AcademicNotesApp = () => {
   const [theme, setTheme] = useState('light');
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // ===== Responsive =====
+  const isMobile = useResponsive();
+
+  // ===== Translation & Theme =====
   const t = translations[language];
   const isRTL = language === 'ar';
   const currentTheme = themes[theme];
 
-  // ======== Initialize app from localStorage ========
+  // ===== Initialize app from localStorage =====
   useEffect(() => {
     const savedLanguage = loadFromStorage(STORAGE_KEYS.LANGUAGE, 'ar');
     const savedTheme = loadFromStorage(STORAGE_KEYS.THEME, 'light');
@@ -175,7 +195,7 @@ const AcademicNotesApp = () => {
     setIsInitialized(true);
   }, []);
 
-  // ======== Initialize notes after language is loaded ========
+  // ===== Initialize notes after language is loaded =====
   useEffect(() => {
     if (!isInitialized) return;
 
@@ -192,24 +212,24 @@ const AcademicNotesApp = () => {
       const sampleNotes = [
         {
           id: 1,
-          title: translations[language].sampleWelcome.title,
-          content: translations[language].sampleWelcome.content,
+          title: t.sampleWelcome.title,
+          content: t.sampleWelcome.content,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           isFavorite: true
         },
         {
           id: 2,
-          title: translations[language].sampleTasks.title,
-          content: translations[language].sampleTasks.content,
+          title: t.sampleTasks.title,
+          content: t.sampleTasks.content,
           createdAt: new Date(Date.now() - 86400000).toISOString(),
           updatedAt: new Date(Date.now() - 86400000).toISOString(),
           isFavorite: false
         },
         {
           id: 3,
-          title: translations[language].sampleProject.title,
-          content: translations[language].sampleProject.content,
+          title: t.sampleProject.title,
+          content: t.sampleProject.content,
           createdAt: new Date(Date.now() - 172800000).toISOString(),
           updatedAt: new Date(Date.now() - 172800000).toISOString(),
           isFavorite: true
@@ -220,7 +240,7 @@ const AcademicNotesApp = () => {
     }
   }, [isInitialized, language]);
 
-  // ======== Save notes/settings whenever they change ========
+  // ===== Save changes =====
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.NOTES, notes); }, [notes, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.LANGUAGE, language); }, [language, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.THEME, theme); }, [theme, isInitialized]);
@@ -228,7 +248,7 @@ const AcademicNotesApp = () => {
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.SHOW_FAVORITES, showFavorites); }, [showFavorites, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.SELECTED_NOTE_ID, selectedNote?.id || null); }, [selectedNote, isInitialized]);
 
-  // ======== Memoized filtered notes ========
+  // ===== Filtered notes =====
   const filteredNotes = useMemo(() => {
     if (!isInitialized) return [];
     let filtered = notes.filter(note => {
@@ -241,7 +261,7 @@ const AcademicNotesApp = () => {
     return filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   }, [notes, searchTerm, showFavorites, isInitialized]);
 
-  // ======== Handlers ========
+  // ===== Handlers =====
   const createNote = () => {
     if (!newNote.title.trim()) { alert(t.pleaseEnterTitle); return; }
     const note = { id: Date.now(), title: newNote.title, content: newNote.content, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), isFavorite: false };
@@ -250,20 +270,17 @@ const AcademicNotesApp = () => {
     setIsCreating(false);
     setSelectedNote(note);
   };
-
   const updateNote = (id, updates) => {
     const updatedNotes = notes.map(note => note.id === id ? { ...note, ...updates, updatedAt: new Date().toISOString() } : note);
     setNotes(updatedNotes);
     if (selectedNote?.id === id) setSelectedNote({ ...selectedNote, ...updates });
   };
-
   const deleteNote = (id) => {
     if (!window.confirm(t.confirmDelete)) return;
     const updatedNotes = notes.filter(note => note.id !== id);
     setNotes(updatedNotes);
     if (selectedNote?.id === id) { setSelectedNote(null); setIsEditing(false); }
   };
-
   const toggleFavorite = (id) => { const note = notes.find(n => n.id === id); updateNote(id, { isFavorite: !note.isFavorite }); };
   const startCreating = () => { setIsCreating(true); setSelectedNote(null); setIsEditing(false); };
   const cancelCreating = () => { setIsCreating(false); setNewNote({ title: '', content: '' }); };
@@ -271,21 +288,21 @@ const AcademicNotesApp = () => {
   const toggleLanguage = () => { setLanguage(language === 'ar' ? 'en' : 'ar'); };
   const toggleTheme = () => { setTheme(theme === 'light' ? 'dark' : 'light'); };
   const handleSearchChange = (newSearchTerm) => { setSearchTerm(newSearchTerm); };
-  // const handleShowFavoritesToggle = () => { setShowFavorites(!showFavorites); };
 
-  // ======== Loading screen ========
+  // ===== Loading Screen =====
   if (!isInitialized) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: themes[theme].background, color: themes[theme].text, fontFamily: 'Times, "Times New Roman", serif' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: currentTheme.background, color: currentTheme.text, fontFamily: 'Times, "Times New Roman", serif' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '40px', border: `4px solid ${themes[theme].borderLight}`, borderTop: `4px solid ${themes[theme].primary}`, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }}></div>
-          <p style={{ fontSize: '18px' }}>{translations[language]?.loading || 'Loading...'}</p>
+          <div style={{ width: '40px', height: '40px', border: `4px solid ${currentTheme.borderLight}`, borderTop: `4px solid ${currentTheme.primary}`, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }}></div>
+          <p style={{ fontSize: '18px' }}>{t.loading}</p>
           <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     );
   }
-  // Rest of the component remains the same...
+
+  // ===== Main Render =====
   return (
     <div style={{
       fontFamily: 'Times, "Times New Roman", serif',
@@ -296,7 +313,8 @@ const AcademicNotesApp = () => {
       margin: 0,
       padding: 0,
       direction: isRTL ? 'rtl' : 'ltr'
-    }}>      <Header
+    }}>
+      <Header
         language={language}
         theme={theme}
         onLanguageToggle={toggleLanguage}
@@ -305,15 +323,19 @@ const AcademicNotesApp = () => {
         currentTheme={currentTheme}
       />
 
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px' }}>
-        <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 15px' }}>
+        <div style={{
+          display: 'flex',
+          gap: isMobile ? '15px' : '20px',
+          alignItems: 'flex-start',
+          flexDirection: isMobile ? 'column' : (isRTL ? 'row-reverse' : 'row')
+        }}>
           <Sidebar
             notes={filteredNotes}
             selectedNote={selectedNote}
             onNoteSelect={selectNote}
             searchTerm={searchTerm}
-            onChange={handleSearchChange}  // ← تأكد من استخدام الدالة هنا
-            onSearchChange={setSearchTerm}
+            onChange={handleSearchChange}
             showFavorites={showFavorites}
             onToggleFavorites={() => setShowFavorites(!showFavorites)}
             onNewNote={startCreating}

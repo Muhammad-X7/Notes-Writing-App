@@ -21,9 +21,10 @@ const NoteViewer = ({
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
                 marginBottom: '20px',
-                flexDirection: isRTL ? 'row-reverse' : 'row'
+                flexDirection: 'column',
+                gap: '15px'
             }}>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, width: '100%' }}>
                     {isEditing ? (
                         <input
                             type="text"
@@ -31,21 +32,23 @@ const NoteViewer = ({
                             onChange={(e) => onNoteUpdate(note.id, { title: e.target.value })}
                             style={{
                                 width: '100%',
-                                fontSize: '24px',
+                                fontSize: 'clamp(18px, 4vw, 24px)',
                                 fontWeight: 'bold',
                                 border: `1px solid ${currentTheme.border}`,
                                 padding: '8px',
                                 fontFamily: 'inherit',
                                 backgroundColor: currentTheme.background,
                                 color: currentTheme.text,
-                                borderRadius: '4px'
+                                borderRadius: '4px',
+                                boxSizing: 'border-box'
                             }}
                         />
                     ) : (
                         <h2 style={{
                             margin: '0',
-                            fontSize: '24px',
-                            fontWeight: 'bold'
+                            fontSize: 'clamp(18px, 4vw, 24px)',
+                            fontWeight: 'bold',
+                            wordBreak: 'break-word'
                         }}>
                             {note.title}
                             {note.isFavorite && (
@@ -75,7 +78,7 @@ const NoteViewer = ({
                         onChange={(e) => onNoteUpdate(note.id, { content: e.target.value })}
                         style={{
                             width: '100%',
-                            height: '400px',
+                            height: 'clamp(300px, 50vh, 400px)',
                             padding: '12px',
                             border: `1px solid ${currentTheme.border}`,
                             fontSize: '14px',
@@ -83,7 +86,8 @@ const NoteViewer = ({
                             resize: 'vertical',
                             backgroundColor: currentTheme.background,
                             color: currentTheme.text,
-                            borderRadius: '4px'
+                            borderRadius: '4px',
+                            boxSizing: 'border-box'
                         }}
                     />
                 ) : (
@@ -91,16 +95,18 @@ const NoteViewer = ({
                         border: `1px solid ${currentTheme.borderLight}`,
                         padding: '20px',
                         backgroundColor: currentTheme.noteBackground,
-                        minHeight: '300px',
-                        borderRadius: '4px'
+                        minHeight: 'clamp(250px, 40vh, 300px)',
+                        borderRadius: '4px',
+                        overflow: 'auto'
                     }}>
                         <pre style={{
                             whiteSpace: 'pre-wrap',
                             fontFamily: 'inherit',
-                            fontSize: '14px',
+                            fontSize: 'clamp(13px, 2.5vw, 14px)',
                             lineHeight: '1.6',
                             margin: 0,
-                            color: currentTheme.text
+                            color: currentTheme.text,
+                            wordBreak: 'break-word'
                         }}>
                             {note.content || (
                                 <span style={{ color: currentTheme.textMuted, fontStyle: 'italic' }}>
@@ -115,18 +121,17 @@ const NoteViewer = ({
             <div style={{
                 borderTop: `1px solid ${currentTheme.borderLight}`,
                 paddingTop: '15px',
-                fontSize: '12px',
+                fontSize: 'clamp(11px, 2vw, 12px)',
                 color: currentTheme.textSecondary
             }}>
-                <p style={{ margin: '0 0 5px 0' }}>
+                <p style={{ margin: '0 0 5px 0', wordBreak: 'break-word' }}>
                     <strong>{t.createdAt}</strong> {new Date(note.createdAt).toLocaleDateString(language === 'ar' ? 'ar' : 'en')} {new Date(note.createdAt).toLocaleTimeString(language === 'ar' ? 'ar' : 'en')}
                 </p>
-                <p style={{ margin: 0 }}>
+                <p style={{ margin: 0, wordBreak: 'break-word' }}>
                     <strong>{t.lastUpdated}</strong> {new Date(note.updatedAt).toLocaleDateString(language === 'ar' ? 'ar' : 'en')} {new Date(note.updatedAt).toLocaleTimeString(language === 'ar' ? 'ar' : 'en')}
                 </p>
             </div>
         </div>
     );
 };
-
 export default NoteViewer;

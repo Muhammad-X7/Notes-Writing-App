@@ -1,4 +1,3 @@
-import React from "react";
 import { Sun, Moon, Globe } from 'lucide-react';
 
 // Header Component
@@ -6,20 +5,30 @@ const Header = ({ language, theme, onLanguageToggle, onThemeToggle, t, currentTh
     return (
         <div style={{
             borderBottom: `1px solid ${currentTheme.border}`,
-            padding: '20px 0',
-            marginBottom: '30px',
+            padding: '15px 0',
+            marginBottom: '20px',
             backgroundColor: currentTheme.surface
         }}>
-            <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 15px' }}>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '10px',
+                    flexWrap: 'wrap',
+                    gap: '10px'
+                }}>
                     <h1 style={{
                         margin: 0,
-                        fontSize: '28px',
-                        fontWeight: 'bold'
+                        fontSize: 'clamp(20px, 4vw, 28px)',
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        flex: '1',
+                        minWidth: '200px'
                     }}>
                         {t.title}
                     </h1>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
                         <button
                             onClick={onThemeToggle}
                             style={{
@@ -32,7 +41,8 @@ const Header = ({ language, theme, onLanguageToggle, onThemeToggle, t, currentTh
                                 borderRadius: '4px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '5px'
+                                gap: '5px',
+                                minWidth: '45px'
                             }}
                             title={theme === 'light' ? 'Dark Mode' : 'Light Mode'}
                         >
@@ -50,7 +60,8 @@ const Header = ({ language, theme, onLanguageToggle, onThemeToggle, t, currentTh
                                 borderRadius: '4px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '5px'
+                                gap: '5px',
+                                minWidth: '60px'
                             }}
                             title={language === 'ar' ? 'English' : 'العربية'}
                         >
@@ -61,7 +72,7 @@ const Header = ({ language, theme, onLanguageToggle, onThemeToggle, t, currentTh
                 </div>
                 <p style={{
                     margin: '0',
-                    fontSize: '16px',
+                    fontSize: 'clamp(14px, 2.5vw, 16px)',
                     color: currentTheme.textSecondary,
                     textAlign: 'center'
                 }}>
@@ -71,5 +82,4 @@ const Header = ({ language, theme, onLanguageToggle, onThemeToggle, t, currentTh
         </div>
     );
 };
-
 export default Header;
