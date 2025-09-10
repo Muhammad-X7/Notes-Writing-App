@@ -1,12 +1,24 @@
-# React + Vite
+# Notes Writing App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Is a web application for managing personal notes, designed to make creating, editing, and deleting notes easy and fast.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Note Management**: Create, edit, delete, and mark notes as favorite or pinned.
+- **Search & Filter**: Search notes by title or content, and view favorites only.
+- **Dark Mode & Languages**: Supports dark mode and both Arabic and English, with automatic text direction change.
+- **Tags**: Add and remove tags for each note.
+- **Local Storage**: All data is saved in `localStorage` for persistence between sessions.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React**: For building an interactive user interface.
+- **Vite**: Fast build tool for project development.
+- **Zustand**: Simple and effective state management.
+- **localStorage**: For storing data locally.
+
+## Important Links
+
+- [Live Demo (if available)](https://notes-writing-app.vercel.app)
+
+> This app is perfect for anyone looking for a simple and effective tool to organize their daily thoughts and notes.
