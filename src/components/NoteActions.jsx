@@ -1,15 +1,28 @@
 import { Star, Save, Edit, Trash2 } from 'lucide-react';
 
-// Note Actions Component
+/**
+ * Component for note action buttons: favorite, edit/save, delete
+ * Props:
+ * - note: the current note object
+ * - isEditing: whether the note is currently being edited
+ * - onEdit: function to start editing
+ * - onSave: function to save changes
+ * - onDelete: function to delete note
+ * - onToggleFavorite: function to toggle favorite status
+ * - isRTL: boolean indicating right-to-left layout
+ * - t: translation object for tooltips/text
+ * - currentTheme: object with colors for styling
+ */
 const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavorite, isRTL, t, currentTheme }) => {
     return (
         <div style={{
             display: 'flex',
             gap: '8px',
             flexWrap: 'wrap',
-            justifyContent: isRTL ? 'flex-start' : 'flex-end',
+            justifyContent: isRTL ? 'flex-start' : 'flex-end', // adjust alignment for RTL
             marginTop: '10px'
         }}>
+            {/* Favorite button */}
             <button
                 onClick={() => onToggleFavorite(note.id)}
                 style={{
@@ -22,11 +35,12 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                     borderRadius: '4px',
                     minWidth: '40px'
                 }}
-                title={note.isFavorite ? t.removeFromFavorites : t.addToFavorites}
+                title={note.isFavorite ? t.removeFromFavorites : t.addToFavorites} // tooltip
             >
-                <Star size={16} />
+                <Star size={16} /> {/* Star icon */}
             </button>
 
+            {/* Edit or Save button */}
             {isEditing ? (
                 <button
                     onClick={onSave}
@@ -40,9 +54,9 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                         borderRadius: '4px',
                         minWidth: '40px'
                     }}
-                    title={t.save}
+                    title={t.save} // tooltip
                 >
-                    <Save size={16} />
+                    <Save size={16} /> {/* Save icon */}
                 </button>
             ) : (
                 <button
@@ -57,12 +71,13 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                         borderRadius: '4px',
                         minWidth: '40px'
                     }}
-                    title={t.edit}
+                    title={t.edit} // tooltip
                 >
-                    <Edit size={16} />
+                    <Edit size={16} /> {/* Edit icon */}
                 </button>
             )}
 
+            {/* Delete button */}
             <button
                 onClick={() => onDelete(note.id)}
                 style={{
@@ -75,11 +90,12 @@ const NoteActions = ({ note, isEditing, onEdit, onSave, onDelete, onToggleFavori
                     borderRadius: '4px',
                     minWidth: '40px'
                 }}
-                title={t.delete}
+                title={t.delete} // tooltip
             >
-                <Trash2 size={16} />
+                <Trash2 size={16} /> {/* Trash icon */}
             </button>
         </div>
     );
 };
+
 export default NoteActions;

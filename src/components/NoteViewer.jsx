@@ -1,6 +1,20 @@
 import NoteActions from './NoteActions';
 
-// Note Viewer Component
+/**
+ * Component to view or edit a single note
+ * Props:
+ * - note: the note object (title, content, dates, isFavorite)
+ * - isEditing: whether the note is in edit mode
+ * - onNoteUpdate: function to update note fields
+ * - onEdit: function to enable editing
+ * - onSave: function to save changes
+ * - onDelete: function to delete note
+ * - onToggleFavorite: function to toggle favorite status
+ * - language: current language ('ar' or 'en')
+ * - isRTL: boolean for right-to-left layout
+ * - t: translation object for labels/text
+ * - currentTheme: theme object for colors
+ */
 const NoteViewer = ({
     note,
     isEditing,
@@ -16,6 +30,7 @@ const NoteViewer = ({
 }) => {
     return (
         <div>
+            {/* Header: Note title and actions */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -26,6 +41,7 @@ const NoteViewer = ({
             }}>
                 <div style={{ flex: 1, width: '100%' }}>
                     {isEditing ? (
+                        /* Editable title input */
                         <input
                             type="text"
                             value={note.title}
@@ -44,6 +60,7 @@ const NoteViewer = ({
                             }}
                         />
                     ) : (
+                        /* Display note title */
                         <h2 style={{
                             margin: '0',
                             fontSize: 'clamp(18px, 4vw, 24px)',
@@ -51,6 +68,7 @@ const NoteViewer = ({
                             wordBreak: 'break-word'
                         }}>
                             {note.title}
+                            {/* Show favorite star */}
                             {note.isFavorite && (
                                 <span style={{ color: currentTheme.warning, margin: isRTL ? '0 10px 0 0' : '0 0 0 10px' }}>★</span>
                             )}
@@ -58,6 +76,7 @@ const NoteViewer = ({
                     )}
                 </div>
 
+                {/* Note action buttons: favorite, edit/save, delete */}
                 <NoteActions
                     note={note}
                     isEditing={isEditing}
@@ -71,8 +90,10 @@ const NoteViewer = ({
                 />
             </div>
 
+            {/* Note content */}
             <div style={{ marginBottom: '20px' }}>
                 {isEditing ? (
+                    /* Editable textarea for content */
                     <textarea
                         value={note.content}
                         onChange={(e) => onNoteUpdate(note.id, { content: e.target.value })}
@@ -91,6 +112,7 @@ const NoteViewer = ({
                         }}
                     />
                 ) : (
+                    /* Display note content */
                     <div style={{
                         border: `1px solid ${currentTheme.borderLight}`,
                         padding: '20px',
@@ -118,6 +140,7 @@ const NoteViewer = ({
                 )}
             </div>
 
+            {/* Note metadata: createdAt and updatedAt */}
             <div style={{
                 borderTop: `1px solid ${currentTheme.borderLight}`,
                 paddingTop: '15px',
@@ -134,4 +157,5 @@ const NoteViewer = ({
         </div>
     );
 };
+
 export default NoteViewer;

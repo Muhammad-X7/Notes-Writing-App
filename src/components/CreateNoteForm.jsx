@@ -1,10 +1,10 @@
 import { Save, X } from 'lucide-react';
 
-// Create Note Form Component
-// Create Note Form Component
+// Component for creating a new note
 const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentTheme }) => {
     return (
         <div>
+            {/* Form title */}
             <h2 style={{
                 margin: '0 0 20px 0',
                 fontSize: 'clamp(18px, 4vw, 24px)',
@@ -13,6 +13,7 @@ const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentThe
                 {t.createNewNote}
             </h2>
 
+            {/* Note title input field */}
             <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: 'clamp(14px, 2.5vw, 16px)' }}>
                     {t.noteTitle}
@@ -37,6 +38,7 @@ const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentThe
                 />
             </div>
 
+            {/* Note content textarea */}
             <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: 'clamp(14px, 2.5vw, 16px)' }}>
                     {t.noteContent}
@@ -61,7 +63,9 @@ const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentThe
                 />
             </div>
 
+            {/* Buttons container */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                {/* Save button */}
                 <button
                     onClick={onSave}
                     style={{
@@ -79,9 +83,11 @@ const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentThe
                         justifyContent: 'center'
                     }}
                 >
-                    <Save size={16} />
+                    <Save size={16} /> {/* Icon from lucide-react */}
                     {t.saveNote}
                 </button>
+
+                {/* Cancel button */}
                 <button
                     onClick={onCancel}
                     style={{
@@ -99,7 +105,7 @@ const CreateNoteForm = ({ newNote, onNoteChange, onSave, onCancel, t, currentThe
                         justifyContent: 'center'
                     }}
                 >
-                    <X size={16} />
+                    <X size={16} /> {/* Icon from lucide-react */}
                     {t.cancel}
                 </button>
             </div>

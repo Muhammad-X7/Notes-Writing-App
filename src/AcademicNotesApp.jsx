@@ -1,12 +1,17 @@
+// ===== Import React hooks & libraries =====
 import { useState, useEffect, useMemo } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
+// ===== Import local utilities and components =====
 import { STORAGE_KEYS, loadFromStorage, saveToStorage } from './components/localStorage';
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import Footer from "./components/Footer";
 
-// Translation object
+// ===== Translation object for multi-language support =====
 const translations = {
   ar: {
     title: 'تطبيق كتابة الملاحظات',
@@ -43,6 +48,8 @@ const translations = {
     noContent: 'لا يوجد محتوى في هذه الملاحظة',
     footerText: 'تطبيق كتابة الملاحظات - أداة بسيطة وفعالة لتنظيم أفكارك',
     loading: 'جاري التحميل...',
+    noteCreated: 'تم إنشاء الملاحظة بنجاح!',
+    noteDeleted: 'تم حذف الملاحظة بنجاح!',
     sampleWelcome: {
       title: 'مرحباً بك في تطبيق الملاحظات',
       content: 'هذا تطبيق بسيط لحفظ وإدارة ملاحظاتك الشخصية.\n\nالميزات المتاحة:\n• إنشاء ملاحظات جديدة\n• البحث في المحتوى\n• إضافة ملاحظات للمفضلة\n• تحرير وحذف الملاحظات\n• دعم اللغة العربية والإنجليزية\n• الوضع الليلي والنهاري\n• حفظ تلقائي لجميع البيانات\n\nابدأ بالنقر على "ملاحظة جديدة" لإنشاء أول ملاحظة لك.'
@@ -91,6 +98,8 @@ const translations = {
     noContent: 'No content in this note',
     footerText: 'Notes Writing App - A simple and effective tool to organize your thoughts',
     loading: 'Loading...',
+    noteCreated: 'Note created successfully!',
+    noteDeleted: 'Note deleted successfully!',
     sampleWelcome: {
       title: 'Welcome to Notes App',
       content: 'This is a simple app to save and manage your personal notes.\n\nAvailable Features:\n• Create new notes\n• Search content\n• Add notes to favorites\n• Edit and delete notes\n• Arabic and English language support\n• Dark and light mode\n• Auto-save for all data\n\nStart by clicking "New Note" to create your first note.'
@@ -106,7 +115,7 @@ const translations = {
   }
 };
 
-// Theme colors
+// ===== Theme definitions =====
 const themes = {
   light: {
     background: '#fff',
@@ -142,7 +151,7 @@ const themes = {
   }
 };
 
-// ===== Custom Hook =====
+// ===== Custom hook: responsive layout detection =====
 const useResponsive = () => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -159,29 +168,30 @@ const useResponsive = () => {
   return isMobile;
 };
 
-// ===== Main Component =====
-const AcademicNotesApp = () => {
-  // ======== State Hooks ========
-  const [notes, setNotes] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedNote, setSelectedNote] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newNote, setNewNote] = useState({ title: '', content: '' });
-  const [language, setLanguage] = useState('ar');
-  const [theme, setTheme] = useState('light');
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  // ===== Responsive =====
+// ===== Main App Component =====
+const AcademicNotesApp = () => {
+  // ===== State variables =====
+  const [notes, setNotes] = useState([]); // All notes
+  const [searchTerm, setSearchTerm] = useState(''); // Search query
+  const [selectedNote, setSelectedNote] = useState(null); // Currently selected note
+  const [isEditing, setIsEditing] = useState(false); // Edit mode flag
+  const [showFavorites, setShowFavorites] = useState(false); // Favorites filter
+  const [isCreating, setIsCreating] = useState(false); // Creating new note
+  const [newNote, setNewNote] = useState({ title: '', content: '' }); // Temp note state
+  const [language, setLanguage] = useState('ar'); // Current language
+  const [theme, setTheme] = useState('light'); // Current theme
+  const [isInitialized, setIsInitialized] = useState(false); // App loaded flag
+
+  // ===== Responsive layout =====
   const isMobile = useResponsive();
 
-  // ===== Translation & Theme =====
+  // ===== Translation & Theme selection =====
   const t = translations[language];
-  const isRTL = language === 'ar';
+  const isRTL = language === 'ar'; // Right-to-left for Arabic
   const currentTheme = themes[theme];
 
-  // ===== Initialize app from localStorage =====
+  // ===== Initialize app settings from localStorage =====
   useEffect(() => {
     const savedLanguage = loadFromStorage(STORAGE_KEYS.LANGUAGE, 'ar');
     const savedTheme = loadFromStorage(STORAGE_KEYS.THEME, 'light');
@@ -195,7 +205,7 @@ const AcademicNotesApp = () => {
     setIsInitialized(true);
   }, []);
 
-  // ===== Initialize notes after language is loaded =====
+  // ===== Load notes after initialization =====
   useEffect(() => {
     if (!isInitialized) return;
 
@@ -204,10 +214,12 @@ const AcademicNotesApp = () => {
 
     if (savedNotes && savedNotes.length > 0) {
       setNotes(savedNotes);
+      // Set previously selected note
       if (savedSelectedNoteId) {
         const foundNote = savedNotes.find(note => note.id === savedSelectedNoteId);
         if (foundNote) setSelectedNote(foundNote);
       }
+      // Create sample notes if none exist
     } else {
       const sampleNotes = [
         {
@@ -238,9 +250,16 @@ const AcademicNotesApp = () => {
       setNotes(sampleNotes);
       saveToStorage(STORAGE_KEYS.NOTES, sampleNotes);
     }
-  }, [isInitialized, language]);
+  }, [isInitialized,
+    language,
+    t.sampleWelcome.title,
+    t.sampleWelcome.content,
+    t.sampleTasks.title,
+    t.sampleTasks.content,
+    t.sampleProject.title,
+    t.sampleProject.content]);
 
-  // ===== Save changes =====
+  // ===== Save changes automatically =====
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.NOTES, notes); }, [notes, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.LANGUAGE, language); }, [language, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.THEME, theme); }, [theme, isInitialized]);
@@ -248,7 +267,7 @@ const AcademicNotesApp = () => {
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.SHOW_FAVORITES, showFavorites); }, [showFavorites, isInitialized]);
   useEffect(() => { if (isInitialized) saveToStorage(STORAGE_KEYS.SELECTED_NOTE_ID, selectedNote?.id || null); }, [selectedNote, isInitialized]);
 
-  // ===== Filtered notes =====
+  // ===== Filter notes based on search and favorites =====
   const filteredNotes = useMemo(() => {
     if (!isInitialized) return [];
     let filtered = notes.filter(note => {
@@ -263,24 +282,47 @@ const AcademicNotesApp = () => {
 
   // ===== Handlers =====
   const createNote = () => {
-    if (!newNote.title.trim()) { alert(t.pleaseEnterTitle); return; }
-    const note = { id: Date.now(), title: newNote.title, content: newNote.content, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), isFavorite: false };
+    if (!newNote.title.trim()) {
+      toast.error(t.pleaseEnterTitle); // Show error if title is empty
+      return;
+    }
+
+    const note = {
+      id: Date.now(),
+      title: newNote.title,
+      content: newNote.content,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isFavorite: false
+    };
+
     setNotes([note, ...notes]);
     setNewNote({ title: '', content: '' });
     setIsCreating(false);
     setSelectedNote(note);
+
+    toast.success(t.noteCreated);
   };
+
   const updateNote = (id, updates) => {
     const updatedNotes = notes.map(note => note.id === id ? { ...note, ...updates, updatedAt: new Date().toISOString() } : note);
     setNotes(updatedNotes);
     if (selectedNote?.id === id) setSelectedNote({ ...selectedNote, ...updates });
   };
+
   const deleteNote = (id) => {
-    if (!window.confirm(t.confirmDelete)) return;
     const updatedNotes = notes.filter(note => note.id !== id);
     setNotes(updatedNotes);
-    if (selectedNote?.id === id) { setSelectedNote(null); setIsEditing(false); }
+
+    // Reset selected note if deleted
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+      setIsEditing(false);
+    }
+
+    toast.success(t.noteDeleted);
   };
+
   const toggleFavorite = (id) => { const note = notes.find(n => n.id === id); updateNote(id, { isFavorite: !note.isFavorite }); };
   const startCreating = () => { setIsCreating(true); setSelectedNote(null); setIsEditing(false); };
   const cancelCreating = () => { setIsCreating(false); setNewNote({ title: '', content: '' }); };
@@ -302,7 +344,7 @@ const AcademicNotesApp = () => {
     );
   }
 
-  // ===== Main Render =====
+  // ===== Main render =====
   return (
     <div style={{
       fontFamily: 'Times, "Times New Roman", serif',
@@ -314,6 +356,8 @@ const AcademicNotesApp = () => {
       padding: 0,
       direction: isRTL ? 'rtl' : 'ltr'
     }}>
+      <ToastContainer position="top-center" autoClose={1800} />
+
       <Header
         language={language}
         theme={theme}

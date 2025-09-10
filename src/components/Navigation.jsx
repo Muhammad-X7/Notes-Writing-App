@@ -1,4 +1,3 @@
-// Navigation Component
 import { Plus, Star } from 'lucide-react';
 
 const Navigation = ({ t, onNewNote, showFavorites, onToggleFavorites, currentTheme }) => {

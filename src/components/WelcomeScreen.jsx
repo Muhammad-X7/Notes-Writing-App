@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 
-// Welcome Screen Component
 const WelcomeScreen = ({ onCreateNote, t, currentTheme }) => {
     return (
         <div style={{ textAlign: 'center', paddingTop: '80px' }}>
